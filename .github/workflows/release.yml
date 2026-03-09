@@ -56,6 +56,9 @@ jobs:
             release_ci_alpine
             release_ci_debian
         env:
+          GHCR_OWNER: ${{ github.repository_owner }}
+          DOCKERHUB_OWNER: ${{ vars.DOCKERHUB_USERNAME }}
+          CI: "true"
           GITHASH: ${{ steps.meta.outputs.GITHASH }}
           BUILD_DATE: ${{ steps.meta.outputs.TIMESTAMP }}
           SOURCE_DATE_EPOCH: ${{ env.EPOCH }}
