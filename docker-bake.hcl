@@ -26,7 +26,12 @@ group "default" {
 }
 
 // variables
-variable "OWNER_NAME" {
+variable "GHCR_OWNER" {
+  type = string
+  default = "feederbox826"
+}
+
+variable "DOCKERHUB_OWNER" {
   type = string
   default = "feederbox826"
 }
@@ -156,10 +161,10 @@ function "cache_from" {
   params = [variant]
   result = [{
     type = "registry",
-    ref = "ghcr.io/${OWNER_NAME}/${CACHE_IMAGE_NAME}:cache-${variant}"
+    ref = "ghcr.io/${GHCR_OWNER}/${CACHE_IMAGE_NAME}:cache-${variant}"
   }, {
     type = "registry",
-    ref = "ghcr.io/${OWNER_NAME}/${IMAGE_NAME}:${variant}"
+    ref = "ghcr.io/${GHCR_OWNER}/${IMAGE_NAME}:${variant}"
   }]
 }
 
@@ -167,7 +172,7 @@ function "cache_to" {
   params = [variant]
   result = CI ? [{
     type = "registry",
-    ref = "ghcr.io/${OWNER_NAME}/${CACHE_IMAGE_NAME}:cache-${variant}",
+    ref = "ghcr.io/${GHCR_OWNER}/${CACHE_IMAGE_NAME}:cache-${variant}",
     mode = "max",
     compression = "zstd"
   }] : []
@@ -178,17 +183,17 @@ function "tag" {
   params = [variant]
   result = concat(
     [
-      "ghcr.io/${OWNER_NAME}/${IMAGE_NAME}:${variant}",
-      "docker.io/${OWNER_NAME}/${IMAGE_NAME}:${variant}",
-      "ghcr.io/${OWNER_NAME}/${IMAGE_NAME}:${variant}-${SHORT_BUILD_DATE}",
-      "docker.io/${OWNER_NAME}/${IMAGE_NAME}:${variant}-${SHORT_BUILD_DATE}"
+      "ghcr.io/${GHCR_OWNER}/${IMAGE_NAME}:${variant}",
+      "docker.io/${DOCKERHUB_OWNER}/${IMAGE_NAME}:${variant}",
+      "ghcr.io/${GHCR_OWNER}/${IMAGE_NAME}:${variant}-${SHORT_BUILD_DATE}",
+      "docker.io/${DOCKERHUB_OWNER}/${IMAGE_NAME}:${variant}-${SHORT_BUILD_DATE}"
     ],
     variant == "alpine" ? [
-      "ghcr.io/${OWNER_NAME}/${IMAGE_NAME}:latest",
-      "docker.io/${OWNER_NAME}/${IMAGE_NAME}:latest"
+      "ghcr.io/${GHCR_OWNER}/${IMAGE_NAME}:latest",
+      "docker.io/${DOCKERHUB_OWNER}/${IMAGE_NAME}:latest"
     ] : variant == "alpine-develop" ? [
-      "ghcr.io/${OWNER_NAME}/${IMAGE_NAME}:develop",
-      "docker.io/${OWNER_NAME}/${IMAGE_NAME}:develop"
+      "ghcr.io/${GHCR_OWNER}/${IMAGE_NAME}:develop",
+      "docker.io/${DOCKERHUB_OWNER}/${IMAGE_NAME}:develop"
     ] : []
   )
 }
