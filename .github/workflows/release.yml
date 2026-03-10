@@ -21,6 +21,11 @@ jobs:
   bake:
     runs-on: ubuntu-latest
     steps:
+      - id: names
+        name: set registry owner names
+        run: |
+          echo "ghcr_owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+          echo "dockerhub_owner=$(echo '${{ vars.DOCKERHUB_USERNAME }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
       # checkout for timestamp
       - uses: actions/checkout@v5
       - id: meta
@@ -56,8 +61,8 @@ jobs:
             release_ci_alpine
             release_ci_debian
         env:
-          GHCR_OWNER: ${{ github.repository_owner }}
-          DOCKERHUB_OWNER: ${{ vars.DOCKERHUB_USERNAME }}
+          GHCR_OWNER: ${{ steps.names.outputs.ghcr_owner }}
+          DOCKERHUB_OWNER: ${{ steps.names.outputs.dockerhub_owner }}
           CI: "true"
           GITHASH: ${{ steps.meta.outputs.GITHASH }}
           BUILD_DATE: ${{ steps.meta.outputs.TIMESTAMP }}
